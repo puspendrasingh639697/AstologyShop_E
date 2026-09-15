@@ -60,7 +60,7 @@ app.use(compression());
 app.use(cors({
     origin: function(origin, callback) {
         const allowedOrigins = [
-            'http://localhost:5173',
+            'https://astrologyshop-eshop.vercel.app',
             'http://localhost:5174',
             'https://piyush-products.vercel.app',
             'https://thelootbazaar.vercel.app',
