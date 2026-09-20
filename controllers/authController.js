@@ -26,53 +26,7 @@ transporter.verify(function (error, success) {
     }
 });
 
-// // ✅ REGISTER (Updated: Now accepts role & optional admin secret key)
-// export const register = async (req, res) => {
-//     try {
-//         const { name, email, password, phone, role, adminSecretKey } = req.body;
 
-//         if (!name || !email || !password) {
-//             return res.status(400).json({ success: false, message: "Please fill all required fields" });
-//         }
-
-//         const userExists = await User.findOne({ email });
-//         if (userExists) {
-//             return res.status(400).json({ success: false, message: "User already exists" });
-//         }
-
-//         // Agar koi admin ya astrologer register kar raha hai toh secret key verify karein
-//         let assignedRole = 'user';
-//         if (role && role !== 'user') {
-//             const MASTER_SECRET = process.env.ADMIN_SECRET_KEY || "mySuperSecretAdminKey123";
-//             if (adminSecretKey !== MASTER_SECRET) {
-//                 return res.status(403).json({ success: false, message: "Unauthorized! Invalid Admin Secret Key." });
-//             }
-//             assignedRole = role; // 'admin', 'super_admin', 'astrologer'
-//         }
-
-//         const user = await User.create({ 
-//             name, 
-//             email, 
-//             password, 
-//             phone: phone || null,
-//             role: assignedRole 
-//         });
-
-//         res.status(201).json({ 
-//             success: true, 
-//             message: `${assignedRole.toUpperCase()} Registered Successfully!`,
-//             user: {
-//                 id: user._id,
-//                 name: user.name,
-//                 email: user.email,
-//                 role: user.role
-//             }
-//         });
-//     } catch (error) {
-//         console.error("Register Error:", error);
-//         res.status(500).json({ success: false, message: error.message });
-//     }
-// };
 
 
 export const register = async (req, res) => {

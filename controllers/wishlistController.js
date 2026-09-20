@@ -1,8 +1,5 @@
 import Wishlist from '../models/wishlistModel.js';
 
-// @desc    Get user wishlist
-// @route   GET /api/wishlist
-// @access  Private
 export const getWishlist = async (req, res) => {
   try {
     let wishlist = await Wishlist.findOne({ user: req.user._id }).populate('products.productId');
@@ -62,10 +59,6 @@ export const toggleWishlist = async (req, res) => {
   }
 };
 
-
-// @desc    Remove product from wishlist using DELETE
-// @route   DELETE /api/wishlist/:id
-// @access  Private
 export const removeFromWishlist = async (req, res) => {
   try {
     const wishlist = await Wishlist.findOne({ user: req.user._id });
