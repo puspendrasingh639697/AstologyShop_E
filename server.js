@@ -264,8 +264,8 @@ app.use(cors({
     maxAge: 600
 }));
 
-// ✅✅✅ ZAROORI: Preflight (OPTIONS) requests handle karne ke liye ✅✅✅
-app.options('*', cors());
+// ✅✅✅ Express 5 compatible preflight handler ✅✅✅
+app.options(/.*/, cors());
 
 app.use(requestSizeLimiter);
 app.use(globalLimiter);
