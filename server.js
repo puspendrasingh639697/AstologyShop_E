@@ -194,6 +194,8 @@ import compression from 'compression';
 import connectDB from './config/db.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 
+import settingsRoutes from './routes/settingsRoutes.js';
+
 // Routes
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
@@ -207,6 +209,10 @@ import contentRoutes from './routes/contentRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import wishlistRoutes from './routes/wishlistRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import exportRoutes from './routes/exportRoutes.js';
+import bannerRoutes from './routes/bannerRoutes.js';
+import returnRoutes from './routes/returnRoutes.js';
+import activityRoutes from './routes/activityRoutes.js';
 
 // ✅ Security Middleware Imports
 import {
@@ -298,6 +304,13 @@ app.use("/api/user", userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/admin/notifications', notificationRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/admin/export', exportRoutes);
+app.use('/api/banners', bannerRoutes);
+app.use('/api/returns', returnRoutes);
+app.use('/api/activity', activityRoutes);
+
 
 app.get('/', (req, res) => {
     res.json({

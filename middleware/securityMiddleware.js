@@ -28,35 +28,98 @@ export const securityHeaders = helmet({
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
 });
 
-// ✅ 2. NoSQL Injection Protection - Custom Implementation
+
+
+// // ✅ 2. NoSQL Injection Protection - FIXED
+// export const noSqlSanitize = (req, res, next) => {
+//     // ✅ URL fields ko exclude karo
+//     const urlFields = [
+//         'image', 'images', 'logo', 'siteLogo', 'siteTagline',
+//         'url', 'link', 'avatar', 'banner', 'bannerImage',
+//         'facebookUrl', 'instagramUrl', 'twitterUrl', 'youtubeUrl',
+//         'website', 'contactEmail', 'email', 'razorpayKeyId'
+//     ];
+
+//     const sanitizeObj = (obj) => {
+//         if (!obj) return obj;
+//         for (let key in obj) {
+//             // ✅ Agar URL field hai toh skip karo
+//             if (urlFields.includes(key)) {
+//                 continue;
+//             }
+            
+//             if (typeof obj[key] === 'string') {
+//                 obj[key] = obj[key]
+//                     .replace(/[$]/g, '')
+//                     .replace(/[{}=]/g, '');
+//                 // ✅ `.` remove NAHI karo
+//             } else if (typeof obj[key] === 'object') {
+//                 sanitizeObj(obj[key]);
+//             }
+//         }
+//     };
+
+//     if (req.query) {
+//         sanitizeObj(req.query);
+//     }
+    
+//     if (req.body) {
+//         sanitizeObj(req.body);
+//     }
+    
+//     next();
+// };
+
+// middleware/securityMiddleware.js
 export const noSqlSanitize = (req, res, next) => {
-    if (req.query) {
-        Object.keys(req.query).forEach(key => {
-            if (typeof req.query[key] === 'string') {
-                req.query[key] = req.query[key]
-                    .replace(/[$]/g, '')
-                    .replace(/[.]/g, '')
-                    .replace(/[{}=]/g, '');
+    // ✅ URL fields ko exclude karo
+    const urlFields = [
+        'image',            // ✅ Product image
+        'images',           // ✅ Product images
+        'logo',             // ✅ Site logo
+        'siteLogo',         // ✅ Site logo
+        'bannerImage',      // ✅ Banner image
+        'categoryImage',    // ✅ Category image
+        'url',              // ✅ Generic URL
+        'link',             // ✅ Generic link
+        'avatar',           // ✅ User avatar
+        'facebookUrl',
+        'instagramUrl',
+        'twitterUrl',
+        'youtubeUrl',
+        'website',
+        'razorpayKeyId',    // ✅ Razorpay key
+        'contactEmail',     // ✅ Email
+        'razorpayKeySecret',
+    ];
+
+    const sanitizeObj = (obj) => {
+        if (!obj) return obj;
+        for (let key in obj) {
+            // ✅ Agar URL field hai toh skip karo
+            if (urlFields.includes(key)) {
+                continue;
             }
-        });
+            
+            if (typeof obj[key] === 'string') {
+                obj[key] = obj[key]
+                    .replace(/[$]/g, '')
+                    .replace(/[{}=]/g, '');
+                // ✅ `.` remove NAHI karo
+            } else if (typeof obj[key] === 'object') {
+                sanitizeObj(obj[key]);
+            }
+        }
+    };
+
+    if (req.query) {
+        sanitizeObj(req.query);
     }
     
     if (req.body) {
-        const sanitizeObj = (obj) => {
-            if (!obj) return obj;
-            for (let key in obj) {
-                if (typeof obj[key] === 'string') {
-                    obj[key] = obj[key]
-                        .replace(/[$]/g, '')
-                        .replace(/[.]/g, '')
-                        .replace(/[{}=]/g, '');
-                } else if (typeof obj[key] === 'object') {
-                    sanitizeObj(obj[key]);
-                }
-            }
-        };
         sanitizeObj(req.body);
     }
+    
     next();
 };
 
@@ -174,12 +237,75 @@ export const sanitizeQueryParams = (req, res, next) => {
     next();
 };
 
-// ✅ 11. Body Data Sanitizer
-export const sanitizeBody = (req, res, next) => {
-    const sanitize = (obj) => {
-        if (!obj) return obj;
+// // ✅ 11. Body Data Sanitizer
+// export const sanitizeBody = (req, res, next) => {
+//     const sanitize = (obj) => {
+//         if (!obj) return obj;
         
+//         if (typeof obj === 'string') {
+//             return obj
+//                 .replace(/<[^>]*>/g, '')
+//                 .replace(/javascript:/gi, '')
+//                 .replace(/on\w+=/gi, '')
+//                 .replace(/[<>$&'"]/g, '')
+//                 .trim();
+//         }
+        
+//         if (Array.isArray(obj)) {
+//             return obj.map(item => sanitize(item));
+//         }
+        
+//         if (typeof obj === 'object' && obj !== null) {
+//             const sanitized = {};
+//             for (const [key, value] of Object.entries(obj)) {
+//                 sanitized[key] = sanitize(value);
+//             }
+//             return sanitized;
+//         }
+        
+//         return obj;
+//     };
+    
+//     req.body = sanitize(req.body);
+//     next();
+// };
+
+// ✅ 11. Body Data Sanitizer - FIXED
+export const sanitizeBody = (req, res, next) => {
+    // ✅ URL fields ko exclude karo
+    const urlFields = [
+        'image',
+        'images',
+        'logo',
+        'siteLogo',
+        'siteTagline',
+        'banner',
+        'bannerImage',
+        'categoryImage',
+        'url',
+        'link',
+        'avatar',
+        'facebookUrl',
+        'instagramUrl',
+        'twitterUrl',
+        'youtubeUrl',
+        'website',
+        'contactEmail',
+        'email',
+        'razorpayKeyId',
+        'razorpayKeySecret',
+    ];
+
+    const sanitize = (obj, parentKey = '') => {
+        if (!obj) return obj;
+
+        // ✅ String
         if (typeof obj === 'string') {
+            // ✅ Agar URL field hai toh skip karo
+            if (urlFields.includes(parentKey)) {
+                return obj;   // ✅ As-it-is return karo
+            }
+
             return obj
                 .replace(/<[^>]*>/g, '')
                 .replace(/javascript:/gi, '')
@@ -187,22 +313,24 @@ export const sanitizeBody = (req, res, next) => {
                 .replace(/[<>$&'"]/g, '')
                 .trim();
         }
-        
+
+        // ✅ Array
         if (Array.isArray(obj)) {
-            return obj.map(item => sanitize(item));
+            return obj.map((item) => sanitize(item, parentKey));
         }
-        
+
+        // ✅ Object
         if (typeof obj === 'object' && obj !== null) {
             const sanitized = {};
             for (const [key, value] of Object.entries(obj)) {
-                sanitized[key] = sanitize(value);
+                sanitized[key] = sanitize(value, key);   // ✅ Parent key pass karo
             }
             return sanitized;
         }
-        
+
         return obj;
     };
-    
+
     req.body = sanitize(req.body);
     next();
 };

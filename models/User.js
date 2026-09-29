@@ -2,12 +2,16 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
+// models/User.js
 const addressSchema = new mongoose.Schema({
+    type: { type: String, default: 'Home' },
+    fullName: { type: String, required: true },
+    phone: { type: String, required: true },
     street: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
     zipCode: { type: String, required: true },
-    isDefault: { type: Boolean, default: false }
+    isDefault: { type: Boolean, default: false },
 });
 
 const userSchema = new mongoose.Schema({
@@ -54,7 +58,7 @@ const userSchema = new mongoose.Schema({
     role: { 
         type: String, 
         default: 'user', 
-        enum: ['user', 'admin', 'super_admin', 'astrologer']
+        enum: ['user', 'admin', 'super_admin', 'astrologer','blog_admin']
     },
     
     // =======================
