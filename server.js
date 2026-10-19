@@ -245,7 +245,7 @@ app.use(cors({
     origin: function(origin, callback) {
         const allowedOrigins = [
             'https://astrologyshop-eshop.vercel.app',
-            'http://localhost:5173', // Vite default port
+            'https://my-shop-jade-two.vercel.app', // Vite default port
             'http://localhost:5174',
             'http://localhost:3000', // React default port
             'https://piyush-products.vercel.app',
