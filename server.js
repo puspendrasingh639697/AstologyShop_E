@@ -213,6 +213,7 @@ import exportRoutes from './routes/exportRoutes.js';
 import bannerRoutes from './routes/bannerRoutes.js';
 import returnRoutes from './routes/returnRoutes.js';
 import activityRoutes from './routes/activityRoutes.js';
+import blogRoutes from './routes/blogRoutes.js';
 
 // ✅ Security Middleware Imports
 import {
@@ -245,7 +246,8 @@ app.use(cors({
     origin: function(origin, callback) {
         const allowedOrigins = [
             'https://astrologyshop-eshop.vercel.app',
-            'https://my-shop-jade-two.vercel.app', // Vite default port
+            'https://my-shop-jade-two.vercel.app',
+             'http://localhost:5173', // Vite default port
             'http://localhost:5174',
             'http://localhost:3000', // React default port
             'https://piyush-products.vercel.app',
@@ -293,6 +295,7 @@ connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/blogs', blogRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/cart', cartRoutes);
